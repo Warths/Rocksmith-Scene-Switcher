@@ -4,8 +4,11 @@ from iniReader import INIReader
 from time import sleep
 from logger import log
 
+# Initializing main objects
+# Configuration
 conf = INIReader("config.ini")
 
+# OBS Web Socket Client / OBS controller abstraction
 client = ObsController(
     conf.get_value("OBSWebSocket", "host"),
     conf.get_value("OBSWebSocket", "port"),
@@ -19,6 +22,10 @@ sniffer = Rocksniffer(
 error_wait_time = 1
 
 def error(message):
+    """
+    log Error with incremental wait time.
+    :param message: message to log as a warning
+    """
     global error_wait_time
     error_wait_time = min(error_wait_time * 2, 60)
     log.warning(message)
@@ -27,6 +34,7 @@ def error(message):
 
 # Main loop
 while True:
+    # Sleep and Reload the config.
     sleep(0.1)
     conf.reload()
     # Updating configuration
@@ -38,13 +46,12 @@ while True:
     client.forbidden = conf.get_value("Behaviour", "forbidden_switch_on_scenes", list)
     new_configuration = [client.IP, client.PORT, client.PASS]
 
+    # Killing Socket if configuration changed
     if current_configuration != new_configuration:
         log.notice("New configuration for OBSWebSocket. Restarting client..")
         client.socket = None
 
-    sniffer.host = conf.get_value("RockSniffer", "host")
-    sniffer.port = conf.get_value("RockSniffer", "port")
-    # Connecting to OBS controller
+    # Connecting / Keeping OBS Controller alive
     try:
         alive = client.socket
         if not alive:
@@ -59,17 +66,26 @@ while True:
         continue
 
     # Updating Rocksniffer
+    # Config
+    sniffer.host = conf.get_value("RockSniffer", "host")
+    sniffer.port = conf.get_value("RockSniffer", "port")
+    # Internal Values
     try:
+        #
         if not sniffer.memory:
             log.notice("Starting sniffing..")
         sniffer.update()
     except ConnectionError:
+        # Restarting the loop and cleaning memory if implicitely failed
+        sniffer.memory = None
         log.notice("Rocksniffer update failed.")
+        continue
 
+    # If sniff failed explicitely, restarting the loop
     if not sniffer.success:
         continue
 
-    # Behaviour
+    # Main Logic
     try:
         # Case in game
         if sniffer.in_game and not sniffer.in_pause:
@@ -80,6 +96,8 @@ while True:
         # Case in menu
         elif not sniffer.in_game:
             client.smart_switch(conf.get_value('Behaviour', "in_menu"))
+
+    # Killing socket if any errors occured
     except:
         log.warning("Error using OBS WebSocket.")
         client.socket = None
