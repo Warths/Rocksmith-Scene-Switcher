@@ -16,7 +16,7 @@ Can we say "new" if it's the first release though ?
 Before using this software, you need to be sure about 3 things : 
 - You have OBS WebSocket plugin installed in OBS Studio
 - You have Rocksniffer running with the API enabled
-- That OBS Studio is running (Well.. Otherwise the Scene Switcher will manifest its displeasure)
+- OBS Studio is running (Well.. Otherwise the Scene Switcher will manifest its displeasure)
 
 Go download the latest executable version on [the release section !](https://github.com/Warths/Rocksmith-Scene-Switcher/releases)
 
