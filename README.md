@@ -19,6 +19,7 @@ port = 4444
 pass = 
 
 [RockSniffer]
+# You can customize Rocksmith adress if needed 
 host = localhost
 port = 9938
 
