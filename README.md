@@ -31,8 +31,8 @@ host = localhost
 port = 9938
 
 [Behaviour]
-# cooldown refers to the minimum time beetween two switches. 
-# the 3 following values are the scene names tied to it's rocksmith state 
+# cooldown refers to the minimum time between two switches. 
+# the 3 following values are the scene names tied to its rocksmith state 
 # forbidden_switch_on_scenes is the list of the scenes that doesn't allow for automatic changes once inside
 cooldown = 3
 paused = PauseSceneName
