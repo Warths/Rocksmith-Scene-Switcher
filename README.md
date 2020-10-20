@@ -2,6 +2,10 @@
 
 Python program that uses Rocksniffer and OBS Web Socket to automatically switch your OBS Studio scene depending on Rocksmith state.
 
+# How to use ? 
+
+Go download the latest executable version on [the release section !](https://github.com/Warths/Rocksmith-Scene-Switcher/releases)
+
 # New Features!
 
   - Supports pausing the game and navigating throught sections
