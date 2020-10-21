@@ -98,16 +98,16 @@ while True:
         continue
 
     # Interval debugging
-    debug.log_on_interval("In game:{sniffer.in_game} ; " 
-                          "In Pause {sniffer.in_pause} ; " 
-                          "Timer samples : {sniffer.samples} ; "
-                          "Rocksmith State : {sniffer.currentState}".format(sniffer=sniffer))
+    debug.log_on_interval("Game:{sniffer.in_game} " 
+                          "Pause:{sniffer.in_pause} " 
+                          "Tsamples:{sniffer.samples} "
+                          "RsState:{sniffer.currentState} "
+                          "LastSwitch:{client.last_scene}".format(sniffer=sniffer, client=client))
 
     # Main Logic
     try:
         # Case in game
         if sniffer.in_game and not sniffer.in_pause:
-
             client.smart_switch(conf.get_value('Behaviour', "in_game"))
         # Case in Pause
         elif sniffer.in_game and sniffer.in_pause:
