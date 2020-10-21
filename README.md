@@ -44,6 +44,12 @@ paused = PauseSceneName
 in_game = InGameSceneName
 in_menu = MenuSceneName
 forbidden_switch_on_scenes = IntroSceneName; OutroSceneName
+
+[Debugging]
+# Set Debug to 1 to see various stuff in memory and understand what's going wrong
+debug = 0
+log_state_interval = 1
+
 ```
 
 Have fun !
