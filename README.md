@@ -14,7 +14,7 @@ Can we say "new" if it's the first release though ?
 # How to use ? 
 
 Before using this software, you need to be sure about 3 things : 
-- You have OBS WebSocket plugin installed in OBS Studio
+- You have OBS WebSocket 4.7 plugin installed in OBS Studio (be sure to use 4.7) (4.7) (check again)
 - You have Rocksniffer running with the API enabled
 - OBS Studio is running (Well.. Otherwise the Scene Switcher will manifest its displeasure)
 
