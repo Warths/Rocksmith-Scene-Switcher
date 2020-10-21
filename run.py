@@ -3,11 +3,15 @@ from rocksniffer import Rocksniffer
 from iniReader import INIReader
 from time import sleep
 from logger import log
+from debug import Debugger
 
 # Initializing main objects
 # Configuration
 conf = INIReader("config.ini")
-
+debug = Debugger(
+    conf.get_value("Debugging", "debug", int),
+    conf.get_value("Debugging", "log_state_interval", int)
+)
 # OBS Web Socket Client / OBS controller abstraction
 client = ObsController(
     conf.get_value("OBSWebSocket", "host"),
@@ -32,6 +36,13 @@ def error(message):
     log.warning("Re-trying in {} seconds".format(error_wait_time))
     sleep(error_wait_time)
 
+
+# Init debug
+debug.log("Debugging starting.")
+debug.log("[Behaviour]")
+for k, v in conf.content["Behaviour"].items():
+    debug.log("{} = {}".format(k, v))
+
 # Main loop
 while True:
     # Sleep and Reload the config.
@@ -45,7 +56,8 @@ while True:
     client.cooldown = conf.get_value("Behaviour", "cooldown", int)
     client.forbidden = conf.get_value("Behaviour", "forbidden_switch_on_scenes", list)
     new_configuration = [client.IP, client.PORT, client.PASS]
-
+    debug.debug = conf.get_value("Debugging", "debug", int)
+    debug.interval = conf.get_value("Debugging", "log_state_interval", int)
     # Killing Socket if configuration changed
     if current_configuration != new_configuration:
         log.notice("New configuration for OBSWebSocket. Restarting client..")
@@ -85,10 +97,17 @@ while True:
     if not sniffer.success:
         continue
 
+    # Interval debugging
+    debug.log_on_interval("In game:{sniffer.in_game} ; " 
+                          "In Pause {sniffer.in_pause} ; " 
+                          "Timer samples : {sniffer.samples} ; "
+                          "Rocksmith State : {sniffer.currentState}".format(sniffer=sniffer))
+
     # Main Logic
     try:
         # Case in game
         if sniffer.in_game and not sniffer.in_pause:
+
             client.smart_switch(conf.get_value('Behaviour', "in_game"))
         # Case in Pause
         elif sniffer.in_game and sniffer.in_pause:
