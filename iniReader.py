@@ -1,12 +1,13 @@
 import configparser
 from default_config_serialized import serialized
 from logger import log
+import os
 
 class INIReader:
     def __init__(self, path):
         self.path = path
+        self.last_modified = self.mtime
         self.content = self.load()
-        self.save()
 
     def load(self):
         """
@@ -15,10 +16,19 @@ class INIReader:
         """
         config = self.get_default()
         config.read(self.path)
+        self.last_modified = self.mtime
         return config
 
     def reload(self):
-        self.content = self.load()
+        """
+        Reload only if file changed
+        :return: Boolean (True if reloaded else False)
+        """
+        if self.mtime != self.last_modified:
+            self.content = self.load()
+            return True
+        else:
+            return False
 
     def save(self):
         """
@@ -26,6 +36,11 @@ class INIReader:
         """
         with open(self.path, 'w') as configfile:
             self.content.write(configfile)
+
+    @property
+    def mtime(self):
+        """ Return last modified time of the config """
+        return os.stat(self.path).st_mtime
 
     def get_default(self):
         """
