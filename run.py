@@ -8,6 +8,7 @@ from debug import Debugger
 # Initializing main objects
 # Configuration
 conf = INIReader("config.ini")
+
 debug = Debugger(
     conf.get_value("Debugging", "debug", int),
     conf.get_value("Debugging", "log_state_interval", int)
@@ -43,11 +44,15 @@ debug.log("[Behaviour]")
 for k, v in conf.content["Behaviour"].items():
     debug.log("{} = {}".format(k, v))
 
+
 # Main loop
 while True:
     # Sleep and Reload the config.
     sleep(0.1)
-    conf.reload()
+    reloaded = conf.reload()
+    if reloaded:
+        log.notice("Configuration reloaded (changed).")
+
     # Updating configuration
     current_configuration = [client.IP, client.PORT, client.PASS]
     client.IP = conf.get_value("OBSWebSocket", "host")
@@ -89,6 +94,8 @@ while True:
         sniffer.update()
     except ConnectionError:
         # Restarting the loop and cleaning memory if implicitely failed
+        import traceback
+        traceback.print_exc()
         sniffer.memory = None
         log.notice("Rocksniffer update failed.")
         continue
@@ -120,3 +127,4 @@ while True:
     except:
         log.warning("Error using OBS WebSocket.")
         client.socket = None
+
