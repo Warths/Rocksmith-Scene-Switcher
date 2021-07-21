@@ -6,8 +6,13 @@ import os
 class INIReader:
     def __init__(self, path):
         self.path = path
-        self.last_modified = self.mtime
         self.content = self.load()
+
+        self.last_modified = self.mtime
+        if self.mtime == 0:
+            self.save()
+            raise FileNotFoundError
+
 
     def load(self):
         """
@@ -24,8 +29,13 @@ class INIReader:
         Reload only if file changed
         :return: Boolean (True if reloaded else False)
         """
+
+        print(self.mtime)
+        print(self.last_modified)
         if self.mtime != self.last_modified:
             self.content = self.load()
+            print(self.mtime)
+            print(self.last_modified)
             return True
         else:
             return False
@@ -40,7 +50,10 @@ class INIReader:
     @property
     def mtime(self):
         """ Return last modified time of the config """
-        return os.stat(self.path).st_mtime
+        try:
+            return os.stat(self.path).st_mtime
+        except FileNotFoundError:
+            return 0
 
     def get_default(self):
         """
