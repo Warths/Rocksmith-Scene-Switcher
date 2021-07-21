@@ -7,7 +7,15 @@ from debug import Debugger
 
 # Initializing main objects
 # Configuration
-conf = INIReader("config.ini")
+conf = None
+try:
+    conf = INIReader("config.ini")
+except FileNotFoundError:
+    log.notice('A config.ini file was created. Fill it, then relaunch RocksmithSceneSwitcher.')
+    log.notice('Press any key to exit this program.')
+    input()
+    exit(0)
+
 
 debug = Debugger(
     conf.get_value("Debugging", "debug", int),
