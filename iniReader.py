@@ -30,12 +30,8 @@ class INIReader:
         :return: Boolean (True if reloaded else False)
         """
 
-        print(self.mtime)
-        print(self.last_modified)
         if self.mtime != self.last_modified:
             self.content = self.load()
-            print(self.mtime)
-            print(self.last_modified)
             return True
         else:
             return False
