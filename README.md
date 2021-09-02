@@ -17,9 +17,9 @@ Before using this software, you need to be sure about 2 things :
 
 
 
-Go download the latest executable version on [the release section !](https://github.com/Warths/Rocksmith-Scene-Switcher/releases)
+Download the latest executable version on [the release section !](https://github.com/Warths/Rocksmith-Scene-Switcher/releases)
 
-Upon first opening of the program, a config.ini file will be created. You can change it, especialy the [Behaviour] section
+Upon first opening of the program, a config.ini file will be created. You can change it, especially the [Behaviour] section
 
 
 ```ini
