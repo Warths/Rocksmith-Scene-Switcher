@@ -23,7 +23,7 @@ def save_to_log(string):
     date = datetime.datetime.now()
     try:
         with open('log_{}_{}.txt'.format(getmonth(date.month), date.year), 'a') as file:
-            file.write(string + '\r')
+            file.write(string + '\n')
     except:
         pass
     return str(string)

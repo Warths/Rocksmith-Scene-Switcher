@@ -108,7 +108,7 @@ while True:
             log.notice("Starting sniffing..")
         sniffer.update()
     except ConnectionError:
-        # Restarting the loop and cleaning memory if implicitely failed
+        # Restarting the loop and cleaning memory if implicitly failed
         import traceback
 
         traceback.print_exc()
@@ -116,7 +116,7 @@ while True:
         log.notice("Rocksniffer update failed.")
         continue
 
-    # If sniff failed explicitely, restarting the loop
+    # If sniff failed explicitly, restarting the loop
     if not sniffer.success:
         continue
 
@@ -135,7 +135,7 @@ while True:
         elif not sniffer.in_game:
             client.smart_switch(conf.get_value('Behaviour', "in_menu"))
 
-    # Killing socket if any errors occured
+    # Killing socket if any errors occurred
     except:
         log.warning("Error using OBS WebSocket.")
         client.socket = None
