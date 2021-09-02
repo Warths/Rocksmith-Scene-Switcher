@@ -20,7 +20,7 @@ class INIReader:
         :return: Config Object
         """
         config = self.get_default()
-        config.read(self.path)
+        config.read(self.path, encoding="UTF-8")
         self.last_modified = self.mtime
         return config
 
