@@ -16,7 +16,6 @@ except FileNotFoundError:
     input()
     exit(0)
 
-
 debug = Debugger(
     conf.get_value("Debugging", "debug", int),
     conf.get_value("Debugging", "log_state_interval", int)
@@ -34,6 +33,7 @@ sniffer = Rocksniffer(
 
 error_wait_time = 1
 
+
 def error(message):
     """
     log Error with incremental wait time.
@@ -46,12 +46,19 @@ def error(message):
     sleep(error_wait_time)
 
 
+def get_debug_message():
+    return "Game:{sniffer.in_game} " \
+           "Pause:{sniffer.in_pause} " \
+           "Tsamples:{sniffer.samples} " \
+           "RsState:{sniffer.currentState} " \
+           "LastSwitch:{client.last_scene}".format(sniffer=sniffer, client=client)
+
+
 # Init debug
 debug.log("Debugging starting.")
 debug.log("[Behaviour]")
 for k, v in conf.content["Behaviour"].items():
     debug.log("{} = {}".format(k, v))
-
 
 # Main loop
 while True:
@@ -103,6 +110,7 @@ while True:
     except ConnectionError:
         # Restarting the loop and cleaning memory if implicitely failed
         import traceback
+
         traceback.print_exc()
         sniffer.memory = None
         log.notice("Rocksniffer update failed.")
@@ -113,11 +121,7 @@ while True:
         continue
 
     # Interval debugging
-    debug.log_on_interval("Game:{sniffer.in_game} " 
-                          "Pause:{sniffer.in_pause} " 
-                          "Tsamples:{sniffer.samples} "
-                          "RsState:{sniffer.currentState} "
-                          "LastSwitch:{client.last_scene}".format(sniffer=sniffer, client=client))
+    debug.log_on_interval(get_debug_message())
 
     # Main Logic
     try:
@@ -135,4 +139,3 @@ while True:
     except:
         log.warning("Error using OBS WebSocket.")
         client.socket = None
-
