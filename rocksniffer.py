@@ -46,8 +46,8 @@ class Rocksniffer:
         Logic for pause detection
         :return:
         """
-        time_beetwen_samples = abs(self.samples[0] - self.samples[2])
-        if time_beetwen_samples > 2:
+        time_between_samples = abs(self.samples[0] - self.samples[2])
+        if time_between_samples > 2:
             return True
         else:
             return not self.samples[0] < self.samples[1] < self.samples[2]

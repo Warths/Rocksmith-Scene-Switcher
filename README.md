@@ -24,13 +24,13 @@ Upon first opening of the program, a config.ini file will be created. You can ch
 
 ```ini
 [OBSWebSocket]
-# You can customize OBS WebSocket adress if needed 
+# You can customize OBS WebSocket address if needed 
 host = localhost
 port = 4444
 pass = 
 
 [RockSniffer]
-# You can customize Rocksmith adress if needed 
+# You can customize Rocksmith address if needed 
 host = localhost
 port = 9938
 
