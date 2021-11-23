@@ -1,5 +1,6 @@
 import requests
 
+
 class Rocksniffer:
     def __init__(self, host, port):
         """
@@ -11,7 +12,6 @@ class Rocksniffer:
         self.port = port
         self.memory = None
         self.samples = [0, 0, 0]
-
 
     def update(self):
         """
