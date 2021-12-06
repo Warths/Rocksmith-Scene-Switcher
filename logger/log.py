@@ -1,7 +1,9 @@
 import datetime
+
 import colorama
 
 colorama.init()
+
 
 def getmonth(n):
     return ['January',
@@ -22,7 +24,7 @@ def getmonth(n):
 def save_to_log(string):
     date = datetime.datetime.now()
     try:
-        with open('log_{}_{}.txt'.format(getmonth(date.month), date.year), 'a') as file:
+        with open('log_{}_{}.txt'.format(date.year, getmonth(date.month)), 'a') as file:
             file.write(string + '\n')
     except:
         pass
