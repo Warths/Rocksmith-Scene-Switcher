@@ -52,7 +52,7 @@ def third_party(text):
 
 
 def get_date():
-    return datetime.datetime.now().strftime("[%d/%m/%y - %H:%M:%S.%f] - ")
+    return datetime.datetime.now().strftime("[%Y-%m-%d - %H:%M:%S.%f] - ")
 
 
 class Log:
