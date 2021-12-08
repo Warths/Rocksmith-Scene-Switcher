@@ -24,7 +24,7 @@ def getmonth(n):
 def save_to_log(string):
     date = datetime.datetime.now()
     try:
-        with open('log_{}_{}.txt'.format(date.year, getmonth(date.month)), 'a') as file:
+        with open('log_{}_{}.txt'.format(date.year, getmonth(date.month)), 'a', encoding="utf-8") as file:
             file.write(string + '\n')
     except:
         pass
