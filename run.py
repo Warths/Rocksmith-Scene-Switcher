@@ -87,7 +87,7 @@ def update_conf():
 while True:
     # Sleep a bit
     sleep(0.1)
-    # debug.log_on_interval(get_debug_message())
+
     # Reload the config.
     reloaded = conf.reload()
     if reloaded:
