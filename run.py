@@ -1,9 +1,10 @@
+from time import sleep
+
+from debug import Debugger
+from iniReader import INIReader
+from logger import log
 from obscontroller import ObsController
 from rocksniffer import Rocksniffer
-from iniReader import INIReader
-from time import sleep
-from logger import log
-from debug import Debugger
 
 # Initializing main objects
 # Configuration
@@ -51,7 +52,7 @@ def get_debug_message():
            "Pause:{sniffer.in_pause} " \
            "Tsamples:{sniffer.samples} " \
            "RsState:{sniffer.currentState} " \
-           "LastSwitch:{client.last_scene}".format(sniffer=sniffer, client=client)
+           "LastScene:{client.last_scene}".format(sniffer=sniffer, client=client)
 
 
 # Init debug
@@ -60,28 +61,38 @@ debug.log("[Behaviour]")
 for k, v in conf.content["Behaviour"].items():
     debug.log("{} = {}".format(k, v))
 
-# Main loop
-while True:
-    # Sleep and Reload the config.
-    sleep(0.1)
-    reloaded = conf.reload()
-    if reloaded:
-        log.notice("Configuration reloaded (changed).")
 
-    # Updating configuration
-    current_configuration = [client.IP, client.PORT, client.PASS]
+def update_conf():
+    # Updating OBS WebSocket configurations
+    client_current_config = [client.IP, client.PORT, client.PASS]
     client.IP = conf.get_value("OBSWebSocket", "host")
     client.PORT = conf.get_value("OBSWebSocket", "port")
     client.PASS = conf.get_value("OBSWebSocket", "pass")
     client.cooldown = conf.get_value("Behaviour", "cooldown", int)
     client.forbidden = conf.get_value("Behaviour", "forbidden_switch_on_scenes", list)
-    new_configuration = [client.IP, client.PORT, client.PASS]
+    client_new_config = [client.IP, client.PORT, client.PASS]
+    # Killing Socket if configuration has been changed
+    if client_current_config != client_new_config:
+        log.notice("New configuration for OBSWebSocket found! Restarting client..")
+        client.socket = None
+    # Updating Debug configurations
     debug.debug = conf.get_value("Debugging", "debug", int)
     debug.interval = conf.get_value("Debugging", "log_state_interval", int)
-    # Killing Socket if configuration changed
-    if current_configuration != new_configuration:
-        log.notice("New configuration for OBSWebSocket. Restarting client..")
-        client.socket = None
+    # Updating Rocksniffer Configurations
+    sniffer.host = conf.get_value("RockSniffer", "host")
+    sniffer.port = conf.get_value("RockSniffer", "port")
+
+
+# Main loop
+while True:
+    # Sleep a bit
+    sleep(0.1)
+
+    # Reload the config.
+    reloaded = conf.reload()
+    if reloaded:
+        log.notice("Configuration reloaded (changed).")
+        update_conf()
 
     # Connecting / Keeping OBS Controller alive
     try:
@@ -97,11 +108,7 @@ while True:
         error("Failed to connect to OBS WebSocket. Please check your config.")
         continue
 
-    # Updating Rocksniffer
-    # Config
-    sniffer.host = conf.get_value("RockSniffer", "host")
-    sniffer.port = conf.get_value("RockSniffer", "port")
-    # Internal Values
+    # Updating Rocksniffer internal Values
     try:
         #
         if not sniffer.memory:
@@ -113,7 +120,7 @@ while True:
 
         traceback.print_exc()
         sniffer.memory = None
-        log.notice("Rocksniffer update failed.")
+        log.notice("Updating Rocksniffer internal Values failed!")
         continue
 
     # If sniff failed explicitly, restarting the loop

@@ -1,15 +1,18 @@
-from obswebsocket import obsws, requests
 import time
+
+from obswebsocket import obsws, requests
+
 import logger
+
 
 class ObsController:
     def __init__(self, IP, PORT, PASS=None, cooldown=3, forbidden=[]):
         """
 
-        :param IP: OBSWS Host (should be localhost)
-        :param PORT: OBSWS Port (default = 4444)
-        :param PASS: Password. Strongly recommanded
-        :param cooldown: mimimum time beetween two scene change
+        :param IP: OBS Websocket Host (should be localhost)
+        :param PORT: OBS Websocket Port (default = 4444)
+        :param PASS: Password. Strongly recommended
+        :param cooldown: minimum time between two scene change
         :param forbidden: list of the scenes that doesn't allows for switching
         """
         self.socket = None
@@ -23,8 +26,6 @@ class ObsController:
         self.cooldown = cooldown
         self.forbidden = forbidden
 
-
-
     def socket_init(self):
         """
         Init the socket. Raise ConnectionError if failed.
@@ -37,15 +38,12 @@ class ObsController:
             self.socket = None
             raise ConnectionError
 
-
-
     def keep_alive(self):
         """
         Init the socket if dead, otherwise do nothing
         """
         if self.socket is None:
             self.socket_init()
-
 
     @property
     def current_scene(self):
@@ -54,7 +52,6 @@ class ObsController:
         :return: Str. Scene name
         """
         return self.socket.call(requests.GetCurrentScene()).datain['name']
-
 
     def go_to_scene(self, scene):
         """

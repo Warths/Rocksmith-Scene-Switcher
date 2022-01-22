@@ -1,7 +1,9 @@
 import configparser
+import os
+
 from default_config_serialized import serialized
 from logger import log
-import os
+
 
 class INIReader:
     def __init__(self, path):
@@ -12,7 +14,6 @@ class INIReader:
         if self.mtime == 0:
             self.save()
             raise FileNotFoundError
-
 
     def load(self):
         """
@@ -92,6 +93,3 @@ class INIReader:
             self.save()
             # Returning new value, using this method
             return self.get_value(section, key, cast)
-
-
-
